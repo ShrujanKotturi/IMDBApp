@@ -9,7 +9,9 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MovieDetailActivity extends AppCompatActivity {
     Intent intent;
@@ -22,8 +24,6 @@ public class MovieDetailActivity extends AppCompatActivity {
     int totalNumberOfMovieObjects = 0;
     static int currentMovieObjectNumber = -1;
 
-
-    static String selectedIMDbId;
     static Movies selectedMovieObject;
 
     @Override
@@ -47,7 +47,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         intent = getIntent();
 
         if (intent.getExtras() != null) {
-            selectedIMDbId = intent.getExtras().getString(Constants.INTENT_IMDB_CURRENT);
+            currentMovieObjectNumber = intent.getExtras().getInt(Constants.INTENT_IMDB_CURRENT);
             moviesArrayList = (ArrayList<Movies>) intent.getExtras().getSerializable(Constants.INTENT_MOVIES_OBJECT_TO_MOVIE_DETAILS);
             new GetIndividualMovieAsyncTask(this).execute(moviesArrayList);
         }
@@ -78,28 +78,13 @@ public class MovieDetailActivity extends AppCompatActivity {
 
 
     public void setMoviesDetailsActivityUIElements(final ArrayList<Movies> movies) {
-
         arrayListMovies = movies;
-
-        for (Movies movieItem : arrayListMovies) {
-            currentMovieObjectNumber++;
-            if (movieItem.getImdbId().equals(selectedIMDbId)) {
-                //selectedMovieObject = movieItem;
-                break;
-            }
-        }
-
         setUI();
-
     }
 
     public void setUI() {
-
         try {
-
             if (!arrayListMovies.isEmpty()) {
-
-                int count = 0;
                 totalNumberOfMovieObjects = arrayListMovies.size();
                 if ((currentMovieObjectNumber + 1) > totalNumberOfMovieObjects) {
                     currentMovieObjectNumber = 0;
@@ -107,23 +92,30 @@ public class MovieDetailActivity extends AppCompatActivity {
                     currentMovieObjectNumber = totalNumberOfMovieObjects - 1;
                 }
 
-                for (Movies movies : arrayListMovies) {
-                    if (count == currentMovieObjectNumber) {
-                        selectedMovieObject = movies;
-                        break;
-                    } else {
-                        count++;
-                    }
-                }
+                selectedMovieObject = arrayListMovies.get(currentMovieObjectNumber);
 
                 textViewMovieName.setText(selectedMovieObject.getMovieTitle() + " (" + selectedMovieObject.getYear() + ")");
-                textViewReleaseDateValue.setText("  " + selectedMovieObject.getReleased());
+                try {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
+                    Date releasedDate = simpleDateFormat.parse(selectedMovieObject.getReleased());
+                    simpleDateFormat = new SimpleDateFormat("MMM dd yyyy");
+                    textViewReleaseDateValue.setText(" " + simpleDateFormat.format(releasedDate));
+                } catch (Exception e) {
+                    textViewReleaseDateValue.setText(Constants.NOT_APPLICABLE);
+                    e.printStackTrace();
+                }
                 textViewGenreValue.setText("  " + selectedMovieObject.getGenre());
                 textViewDirectorValue.setText("  " + selectedMovieObject.getDirector());
                 textViewActorValue.setText("  " + selectedMovieObject.getActors());
                 textViewPlotDescription.setText("  " + selectedMovieObject.getPlot());
-                ratingBarMovie.setRating((Float.parseFloat(selectedMovieObject.getImdbRating())) / 2);
                 ratingBarMovie.setClickable(Boolean.FALSE);
+                try {
+                    ratingBarMovie.setRating((Float.parseFloat(selectedMovieObject.getImdbRating())) / 2);
+                } catch (Exception e) {
+                    ratingBarMovie.setRating(0.0f);
+                    e.printStackTrace();
+                }
+
 
                 if (!selectedMovieObject.getPoster().equals(Constants.NOT_APPLICABLE)) {
                     new GetImageAsyncTask(this).execute(selectedMovieObject.getPoster());
@@ -140,10 +132,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                     imageViewMovie.setImageBitmap(null);
                     Constants.ToastMessages(MovieDetailActivity.this, Constants.IMAGE_NOT_FOUND);
                 }
-
-
-            } else {
-
             }
         } catch (Exception e) {
             e.printStackTrace();

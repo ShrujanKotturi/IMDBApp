@@ -95,25 +95,27 @@ public class GetMoviesAsyncTask extends AsyncTask<String, Integer, ArrayList<Mov
         LinearLayout linearLayoutMovies = (LinearLayout) activity.findViewById(R.id.linearLayoutMovies);
         int count = 0;
         for (final Movies individualMovieItem : movies) {
-            TextView textView = new TextView(activity);
+            final TextView textView = new TextView(activity);
             textView.setText(individualMovieItem.getMovieTitle() + " (" + individualMovieItem.getYear() + ")");
             textView.setClickable(true);
             textView.setTextSize(22);
             textView.setTextColor(Color.BLACK);
             textView.setTag(count);
-            count++;
+
             textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(activity, MovieDetailActivity.class);
                     Log.d("IMDBID", individualMovieItem.getImdbId());
-                    intent.putExtra(Constants.INTENT_IMDB_CURRENT, individualMovieItem.getImdbId());
+                    intent.putExtra(Constants.INTENT_IMDB_CURRENT, (Integer) textView.getTag());
                     intent.putExtra(Constants.INTENT_MOVIES_OBJECT_TO_MOVIE_DETAILS, movies);
                     activity.startActivity(intent);
                 }
             });
             linearLayoutMovies.addView(textView);
+
+            count++;
         }
     }
 }
