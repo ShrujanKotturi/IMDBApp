@@ -49,18 +49,18 @@ public class GetMoviesAsyncTask extends AsyncTask<String, Integer, ArrayList<Mov
                     stringBuilder.append(line);
                     line = bufferedReader.readLine();
                 }
-                return MoviesUtil.MoviesJSONParser.parseMovies(stringBuilder.toString());
+                try {
+                    return MoviesUtil.MoviesJSONParser.parseMovies(stringBuilder.toString());
+                } catch (JSONException e) {
+                    Log.d("demo", e.getMessage());
+                    Log.d("demo", e.getLocalizedMessage());
+                    e.printStackTrace();
+                    return null;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (JSONException e) {
-            if (e.getMessage().contains(Constants.WRONG_MOVIE_STRING)) {
-                Toast.makeText(activity, Constants.WRONG_MOVIE_NAME, Toast.LENGTH_SHORT).show();
-            } else {
-                e.printStackTrace();
-            }
         }
-
         return null;
     }
 
@@ -87,6 +87,9 @@ public class GetMoviesAsyncTask extends AsyncTask<String, Integer, ArrayList<Mov
         progressDialog.dismiss();
         if (movies != null) {
             setSearchMoviesActivityUIElements(movies);
+        } else {
+            activity.finish();
+            Toast.makeText(activity, Constants.WRONG_MOVIE_NAME, Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -107,7 +110,6 @@ public class GetMoviesAsyncTask extends AsyncTask<String, Integer, ArrayList<Mov
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(activity, MovieDetailActivity.class);
-                    Log.d("IMDBID", individualMovieItem.getImdbId());
                     intent.putExtra(Constants.INTENT_IMDB_CURRENT, (Integer) textView.getTag());
                     intent.putExtra(Constants.INTENT_MOVIES_OBJECT_TO_MOVIE_DETAILS, movies);
                     activity.startActivity(intent);

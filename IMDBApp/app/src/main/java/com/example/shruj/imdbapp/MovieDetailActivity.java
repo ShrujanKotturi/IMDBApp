@@ -1,5 +1,6 @@
 package com.example.shruj.imdbapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     public static TextView textViewMovieName, textViewReleaseDateValue, textViewGenreValue, textViewDirectorValue, textViewActorValue, textViewPlotDescription;
     static RatingBar ratingBarMovie;
     static ImageView imageViewMovie;
+    Context context;
 
     int totalNumberOfMovieObjects = 0;
     static int currentMovieObjectNumber = -1;
@@ -34,6 +36,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(Boolean.TRUE);
         actionBar.setIcon(R.drawable.ic_launcher);
+        context = getApplicationContext();
 
 
         textViewMovieName = (TextView) findViewById(R.id.textViewMovieName);
@@ -118,11 +121,11 @@ public class MovieDetailActivity extends AppCompatActivity {
 
 
                 if (!selectedMovieObject.getPoster().equals(Constants.NOT_APPLICABLE)) {
-                    new GetImageAsyncTask(this).execute(selectedMovieObject.getPoster());
+                    new GetImageAsyncTask().execute(selectedMovieObject.getPoster());
                     imageViewMovie.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(MovieDetailActivity.this, MovieWebviewActivity.class);
+                            Intent intent = new Intent(context, MovieWebviewActivity.class);
                             intent.putExtra(Constants.INTENT_IMDB_ID, selectedMovieObject.getImdbId());
                             startActivity(intent);
                         }
@@ -130,7 +133,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 } else {
                     imageViewMovie.setClickable(Boolean.FALSE);
                     imageViewMovie.setImageBitmap(null);
-                    Constants.ToastMessages(MovieDetailActivity.this, Constants.IMAGE_NOT_FOUND);
+                    Constants.ToastMessages(context, Constants.IMAGE_NOT_FOUND);
                 }
             }
         } catch (Exception e) {

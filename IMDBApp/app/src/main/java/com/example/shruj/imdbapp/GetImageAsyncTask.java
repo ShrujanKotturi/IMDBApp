@@ -1,10 +1,8 @@
 package com.example.shruj.imdbapp;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.widget.ImageView;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -16,11 +14,6 @@ import java.net.URL;
  */
 public class GetImageAsyncTask extends AsyncTask<String, Void, Bitmap> {
 
-    Activity activity;
-
-    public GetImageAsyncTask(Activity activity) {
-        this.activity = activity;
-    }
 
     @Override
     protected Bitmap doInBackground(String... params) {
