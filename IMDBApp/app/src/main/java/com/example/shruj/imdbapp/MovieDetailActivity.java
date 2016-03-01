@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MovieDetailActivity extends AppCompatActivity {
+public class MovieDetailActivity extends AppCompatActivity implements IActivity {
     Intent intent;
     ArrayList<Movies> moviesArrayList = new ArrayList<>();
     static ArrayList<Movies> arrayListMovies = new ArrayList<>();
@@ -55,7 +55,6 @@ public class MovieDetailActivity extends AppCompatActivity {
             new GetIndividualMovieAsyncTask(this).execute(moviesArrayList);
         }
 
-
         findViewById(R.id.buttonFinish).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,7 +78,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
     }
 
-
+    @Override
     public void setMoviesDetailsActivityUIElements(final ArrayList<Movies> movies) {
         arrayListMovies = movies;
         setUI();
@@ -112,6 +111,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 textViewActorValue.setText("  " + selectedMovieObject.getActors());
                 textViewPlotDescription.setText("  " + selectedMovieObject.getPlot());
                 ratingBarMovie.setClickable(Boolean.FALSE);
+
                 try {
                     ratingBarMovie.setRating((Float.parseFloat(selectedMovieObject.getImdbRating())) / 2);
                 } catch (Exception e) {
@@ -141,6 +141,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
     public void setImage(Bitmap bitmap) {
         imageViewMovie.setImageBitmap(bitmap);
     }

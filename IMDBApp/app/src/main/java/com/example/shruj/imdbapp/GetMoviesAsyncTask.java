@@ -116,7 +116,6 @@ public class GetMoviesAsyncTask extends AsyncTask<String, Integer, ArrayList<Mov
                 }
             });
             linearLayoutMovies.addView(textView);
-
             count++;
         }
     }

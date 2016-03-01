@@ -58,7 +58,7 @@ public class Constants {
     public static String ERROR_MOVIE_NAME = "Please enter a movie name.";
     public static String NO_INTERNET_CONNECTION = "No available network connection";
     public static String WRONG_MOVIE_STRING = "No value for Search";
-    public static String WRONG_MOVIE_NAME = "Enter a proper movie name";
+    public static String WRONG_MOVIE_NAME = "No movies found, Enter another movie name and Try again";
 
     //Toast Messages
     public static void ToastMessages(Context context, String message) {

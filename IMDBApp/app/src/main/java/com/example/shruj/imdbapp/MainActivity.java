@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
 
         editTextFindMovies = (EditText) findViewById(R.id.editTextFindMovies);
 
-
         findViewById(R.id.buttonSearch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
